@@ -32,11 +32,11 @@ def main(argv=sys.argv):
     options = parse_vars(argv[2:])
     setup_logging(config_uri)
     settings = get_appsettings(config_uri, options=options)
-    engine = engine_from_config(settings, 'sqlalchemy.', echo=True) # echo: log to stdout 
+    engine = engine_from_config(settings, 'sqlalchemy.', echo=False) # echo: log to stdout 
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = Entry(title='test')
+        model = Entry(title='test', body='nice bod')
         DBSession.add(model)
         # model = MyModel(name='one', value=1)
         # DBSession.add(model)

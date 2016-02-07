@@ -40,7 +40,19 @@ class Entry(Base):
     title = Column(Unicode(255), nullable=False) # maybe? types.Unicode ?
     body = Column(UnicodeText)
     created = Column(DateTime, default=now) #DateTime? 
-    edited = Column(DateTime, default=None, onupdate=now)
+    edited = Column(DateTime, default=now, onupdate=now)
+
+    @classmethod
+    def all(cls, session=None):
+        if session == None:
+            session = DBSession
+        return session.query(cls).order_by(cls.created).all()
+
+    @classmethod
+    def by_id(cls, id, session=None):
+        if session == None:
+            session = DBSession
+        return session.query(cls).get(id)
 
 Index('entries_index', Entry.created)
 
