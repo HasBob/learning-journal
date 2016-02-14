@@ -8,6 +8,7 @@ from sqlalchemy import (
     UnicodeText
     )
 
+import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy.orm import (
@@ -43,7 +44,7 @@ class Entry(Base):
     def all(cls, session=None):
         if session is None:
             session = DBSession
-        return session.query(cls).order_by(cls.created).all() # still needs to be updated to sort descending
+        return session.query(cls).order_by(sa.sec(cls.created)).all() # still needs to be updated to sort descending
 
     @classmethod
     def by_id(cls, id, session=None):
@@ -54,3 +55,15 @@ class Entry(Base):
 Index('entries_index', Entry.created)
 
 #Index('my_index', MyModel.name, unique=True, mysql_length=255)
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(Unicode(255), unique=True, nullable=False)
+    password = Column(Unicode(255), nullable=False)
+
+    @classmethod
+    def by_name(cls, name, session=None):
+        if session is None:
+            session = DBSession
+        return DBSession.query(cls).filter(cls.name == name).first()
